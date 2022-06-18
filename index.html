@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+   input[type=text] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+/* Button used to open the chat form - fixed at the bottom of the page */
+.open-button {
+  background-color: #555;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup chat - hidden by default */
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  resize: none;
+  min-height: 200px;
+}
+
+/* When the textarea gets focus, do something */
+.form-container textarea:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/send button */
+.form-container .btn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+</style>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+   var socket = io();
+   function sendMessage() {
+         var message = document.getElementById('message').value;
+         var username = document.getElementById('username').value;
+         var chatId = document.getElementById('chatId').value;
+         var base64image = document.getElementById('base64image').value;
+         var base64audio = document.getElementById('base64audio').value;
+      const data = {
+         message,
+         username,
+         chatId,
+         base64audio,
+         base64image
+      }
+      socket.emit('recive', data);
+   }
+  socket.on("newMessage" , function(data){
+    console.log(data);
+    document.getElementById("name").innerHTML = data.Sender_Id;
+    document.getElementById("chat").innerHTML = data.message;
+
+   })
+</script>
+</head>
+<body>
+
+<h2>Basic Chat App</h2>
+<form>
+   <label for="message">Message</label>
+   <input type="text" id="message" name="message">
+   <label for="username">Username</label>
+   <input type="text" id="username" name="username">
+   <label for="chatId">Chat Id</label>
+   <input type="text" id="chatId" name="chatId">
+   <label for="base64image">Base64Image</label>
+   <input type="text" id="base64image" name="base64image">
+   <label for="base64audio">Base64Audio</label>
+   <input type="text" id="base64audio" name="base64audio">
+   <button type="button" name="button" onclick="sendMessage()" class="button">Send</button>
+ </form>
+
+
+ <div style="width: 100vw; height: 30vh; overflow-y: scroll;">
+         <h3 id="name"></h3>
+         <p id="chat"></p>
+ </div>
+
+
+</body>
+</html>
